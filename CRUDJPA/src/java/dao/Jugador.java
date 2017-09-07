@@ -7,6 +7,8 @@
 package dao;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -39,6 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Jugador.findByFechaNacimiento", query = "SELECT j FROM Jugador j WHERE j.fechaNacimiento = :fechaNacimiento")})
 public class Jugador implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final String DEFAULT_FORMAT_DATE = "dd/mm/yyyy";
     @Id
     @SequenceGenerator(name="jugador_id_jugador_seq", initialValue=1, allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="jugador_id_jugador_seq")
@@ -74,6 +77,14 @@ public class Jugador implements Serializable {
         this.apellidos = apellidos;
         this.fechaNacimiento = fechaNacimiento;
     }
+    
+    public Jugador(Integer idJugador, String nombres, String apellidos, String fechaNacimiento) throws ParseException {
+        this.idJugador = idJugador;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        SimpleDateFormat parser = new SimpleDateFormat(DEFAULT_FORMAT_DATE);
+        this.fechaNacimiento = parser.parse(fechaNacimiento);
+    }
 
     public Integer getIdJugador() {
         return idJugador;
@@ -101,6 +112,11 @@ public class Jugador implements Serializable {
 
     public Date getFechaNacimiento() {
         return fechaNacimiento;
+    }
+    
+    public String getFechaNacimiento(String format) {
+        SimpleDateFormat formateador = new SimpleDateFormat(format);
+        return formateador.format(fechaNacimiento);
     }
 
     public void setFechaNacimiento(Date fechaNacimiento) {
