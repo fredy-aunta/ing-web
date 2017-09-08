@@ -41,7 +41,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Jugador.findByFechaNacimiento", query = "SELECT j FROM Jugador j WHERE j.fechaNacimiento = :fechaNacimiento")})
 public class Jugador implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final String DEFAULT_FORMAT_DATE = "dd/mm/yyyy";
+    private static final String DEFAULT_FORMAT_DATE = "yyyy-mm-dd";
     @Id
     @SequenceGenerator(name="jugador_id_jugador_seq", initialValue=1, allocationSize=1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="jugador_id_jugador_seq")

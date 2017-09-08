@@ -9,10 +9,10 @@ package opr;
 import dao.Jugador;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import util.Conexion;
 
 /**
@@ -20,7 +20,7 @@ import util.Conexion;
  * @author DELL
  */
 public class OperacionesJugador implements OperacionesBasicasJugador{
-
+    private final static Logger logger = LogManager.getLogger(OperacionesJugador.class);
     @Override
     public boolean insertar(Jugador dto) {
         try {
@@ -31,7 +31,7 @@ public class OperacionesJugador implements OperacionesBasicasJugador{
             em.getTransaction().commit();
             return true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
         }
         return false;
     }
@@ -46,22 +46,23 @@ public class OperacionesJugador implements OperacionesBasicasJugador{
             em.getTransaction().commit();
             return true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
         }
         return false;
     }
 
     @Override
     public boolean borrar(long pk_dto) {
+        Jugador jugador = this.consultar(pk_dto);
         try {
             Conexion con = new Conexion();
             EntityManager em = con.obtenerEM();
             em.getTransaction().begin();
-            em.remove(em.find(Jugador.class, pk_dto));
+            em.remove(em.find(Jugador.class, jugador.getIdJugador()));
             em.getTransaction().commit();
             return true;
         } catch (Exception ex) {
-            Logger.getLogger(OperacionesJugador.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error("", ex);
         }
         return false;
     }
@@ -71,9 +72,11 @@ public class OperacionesJugador implements OperacionesBasicasJugador{
         try {
             Conexion con = new Conexion();
             EntityManager em = con.obtenerEM();
-            return em.find(Jugador.class, pk_dto);
+            return em.find(Jugador.class, Math.toIntExact(pk_dto));
+        } catch (ArithmeticException ex){
+            logger.error("", ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
         }
         return null;
     }
@@ -86,9 +89,8 @@ public class OperacionesJugador implements OperacionesBasicasJugador{
             Query q = em.createNamedQuery("Equipo.findAll");
             return q.getResultList();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("", ex);
         }
         return new ArrayList<>();
     }
-    
 }

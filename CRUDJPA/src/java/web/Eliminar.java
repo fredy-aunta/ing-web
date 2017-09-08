@@ -6,6 +6,7 @@
 
 package web;
 
+import dao.Jugador;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,7 +14,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import opr.OperacionesJugador;
+import org.apache.logging.log4j.LogManager;
+import util.SessionUtil;
 
 /**
  *
@@ -33,14 +37,20 @@ public class Eliminar extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         response.setContentType("text/html;charset=UTF-8");
         String val = request.getParameter("id_jugador");
         Long idJugador = Long.parseLong(val);
+        Jugador jugador = operacionesJugador.consultar(idJugador);
+        if (jugador == null) {
+            SessionUtil.setFalshMessage(session, "Jugador no existente");
+            response.sendRedirect(request.getContextPath());
+        }
         boolean borrado = operacionesJugador.borrar(idJugador);
         if (borrado) {
-            
+            LogManager.getLogger(Eliminar.class).debug("Elminado id: " + idJugador);
         } else {
-            
+            LogManager.getLogger(Eliminar.class).error("No eliminado id: " + idJugador);
         }
     }
 

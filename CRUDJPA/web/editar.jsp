@@ -17,7 +17,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>JSP Page <%= id%></title>
         <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
     </head>
     <body>
@@ -49,7 +49,7 @@
                     <div class="form-group">
                         <label for="fecha_nacimiento" class="col-sm-2 control-label">Fecha de nacimiento</label>
                         <div class="col-sm-10">
-                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" value="<%= j.getFechaNacimiento("dd/MM/yyyy")%>">
+                            <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" placeholder="Fecha de nacimiento" value="<%= j.getFechaNacimiento("yyyy-MM-dd")%>">
                         </div>
                     </div>
                     <div class="form-group">

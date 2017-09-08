@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import opr.OperacionesJugador;
+import org.apache.logging.log4j.LogManager;
 
 /**
  *
@@ -51,14 +52,12 @@ public class Editar extends HttpServlet {
             Jugador jugador = new Jugador(idJugador, nombres, apellidos, fechaNacimiento);
             boolean actualizado = operacionesJugador.actualizar(jugador);
             if (actualizado) {
-                
+                LogManager.getLogger(Editar.class).debug("Actualizado id: " + idJugador);
             } else {
-                
+                LogManager.getLogger(Editar.class).error("No actualizado id: " + idJugador);
             }
-        } catch (ParseException ex) {
-            Logger.getLogger(Editar.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NumberFormatException ex) {
-            Logger.getLogger(Editar.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException | NumberFormatException ex) {
+            LogManager.getLogger(Editar.class).error("",ex);
         }
     }
 
