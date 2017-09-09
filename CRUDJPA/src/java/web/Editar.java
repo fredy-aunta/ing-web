@@ -8,17 +8,17 @@ package web;
 
 import dao.Jugador;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import opr.OperacionesJugador;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import util.SessionUtil;
 
 /**
  *
@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 @WebServlet(name = "Editar", urlPatterns = {"/jugador/edit"})
 public class Editar extends HttpServlet {
     OperacionesJugador operacionesJugador = new OperacionesJugador();
+     private final static Logger logger = LogManager.getLogger(Editar.class);
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,8 +39,10 @@ public class Editar extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        HttpSession session = request.getSession();
+        String mensaje = "Ha ocurrido un error inesperado";
         try {
-            response.setContentType("text/html;charset=UTF-8");
             String val = request.getParameter("id_jugador");
             int idJugador = Integer.parseInt(val);
             val = request.getParameter("nombres");
@@ -52,13 +55,18 @@ public class Editar extends HttpServlet {
             Jugador jugador = new Jugador(idJugador, nombres, apellidos, fechaNacimiento);
             boolean actualizado = operacionesJugador.actualizar(jugador);
             if (actualizado) {
-                LogManager.getLogger(Editar.class).debug("Actualizado id: " + idJugador);
+                mensaje = "Jugador actualizado";
+                logger.debug("Actualizado id: " + idJugador);
             } else {
-                LogManager.getLogger(Editar.class).error("No actualizado id: " + idJugador);
+                mensaje = "Jugador no actualizado";
+                logger.error("No actualizado id: " + idJugador);
             }
         } catch (ParseException | NumberFormatException ex) {
-            LogManager.getLogger(Editar.class).error("",ex);
+            logger.error("",ex);
         }
+        
+        SessionUtil.setFalshMessage(session, mensaje);
+        response.sendRedirect(request.getContextPath());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

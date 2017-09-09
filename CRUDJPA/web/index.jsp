@@ -1,3 +1,4 @@
+<%@page import="util.ManejadorPropiedades"%>
 <%@page import="util.SessionUtil"%>
 <!DOCTYPE html>
 <%
@@ -5,7 +6,8 @@
     String message = SessionUtil.getFlashMessage(httpSession);%>
 <html>
     <head>
-        <title>CRUD JPA-</title>
+        <title><%=ManejadorPropiedades.obtenerValor("titulo")%> - <%=ManejadorPropiedades.obtenerValor("version")%></title>
+        <meta name="author" content="<%=ManejadorPropiedades.obtenerValor("autor")%>">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width">
         <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
@@ -29,8 +31,8 @@
             </div>
             <%}%>
             <div class="jumbotron">
-                <h1>Jumbotron heading</h1>
-                <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                <h1>CRUD JPA</h1>
+                <p class="lead">CRUD de la tabla jugador realizado con JPA</p>
                 <!--<p><a class="btn btn-lg btn-success" href="#" role="button">Sign up today</a></p>-->
             </div>
 
@@ -73,8 +75,12 @@
                 </div>
             </div>
 
-            <footer class="footer">
-                <p>Â© 2016 Company, Inc.</p>
+            <footer class="footer navbar-fixed-bottom">
+                <div class="container">
+                    <span class="navbar-text">
+                        © 2016 Company, Inc.
+                    </span>
+                </div>
             </footer>
 
         </div>

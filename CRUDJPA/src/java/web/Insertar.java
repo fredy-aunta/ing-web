@@ -17,7 +17,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import opr.OperacionesJugador;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import util.SessionUtil;
 
 /**
  *
@@ -26,6 +30,7 @@ import opr.OperacionesJugador;
 @WebServlet(name = "Insertar", urlPatterns = {"/jugador/insert"})
 public class Insertar extends HttpServlet {
     private OperacionesJugador oj = new OperacionesJugador();
+    private final static Logger logger = LogManager.getLogger(Insertar.class);
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,7 +43,7 @@ public class Insertar extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+        HttpSession session = request.getSession();
         String nombres = request.getParameter("nombres");
         String apellidos = request.getParameter("apellidos");
         String fechaNacimiento = request.getParameter("fecha_nacimiento");
@@ -47,7 +52,7 @@ public class Insertar extends HttpServlet {
         try {
             fechaNacimientoDate = formatter.parse(fechaNacimiento);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error("",e);
         }
         Jugador jugador = new Jugador();
         jugador.setNombres(nombres);
@@ -55,21 +60,17 @@ public class Insertar extends HttpServlet {
         jugador.setFechaNacimiento(fechaNacimientoDate);
         
         boolean insertado = oj.insertar(jugador);
+        String mensaje;
        
-        
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Insertar</title>");            
-            out.println("</head>");
-            out.println("<body>");
-//            out.println("<h1>Servlet Insertar at " + request.getContextPath() + "</h1>");
-            out.println("<h1> Insertado: " + insertado + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        if (insertado) {
+            mensaje = "Jugador insertado";
+            logger.debug("Insertado");
+        } else {
+            mensaje = "Jugador no insertado";
+            logger.error("No insertado");
         }
+        SessionUtil.setFalshMessage(session, mensaje);
+        response.sendRedirect(request.getContextPath());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

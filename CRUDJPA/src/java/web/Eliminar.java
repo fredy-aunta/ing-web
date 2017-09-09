@@ -47,11 +47,16 @@ public class Eliminar extends HttpServlet {
             response.sendRedirect(request.getContextPath());
         }
         boolean borrado = operacionesJugador.borrar(idJugador);
+        String mensaje;
         if (borrado) {
+            mensaje = "Jugador eliminado";
             LogManager.getLogger(Eliminar.class).debug("Elminado id: " + idJugador);
         } else {
+            mensaje = "Jugador no eliminado";
             LogManager.getLogger(Eliminar.class).error("No eliminado id: " + idJugador);
         }
+        SessionUtil.setFalshMessage(session, mensaje);
+        response.sendRedirect(request.getContextPath());
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
